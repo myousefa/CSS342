@@ -4,6 +4,23 @@
  * This program times iteration vs recursion
  * on numerical look-up on arrays with random
  * numbers
+ * 
+ * How to build/compile (with Makefile):
+ * Run the following command in bash:
+ *  $ make
+ * This will compile the program and output a
+ * runnable executable.
+ * 
+ * How to build/compile (without Makefile):
+ * Run the following command in bash:
+ *  $ g++ main.cpp -std=c++14 -o Program1
+ * This will compile the program and output a
+ * runnable executable.
+ * 
+ * How to run the program:
+ * Run the following command in bash:
+ *  $ ./run.sh
+ * This will run the program and show the results to STDOUT.
  */ 
 #include <iostream>
 #include <cstdlib>
@@ -15,6 +32,7 @@
 using namespace std;
 
 int* fillArray(int * arr, int sz, int upper_bound){
+    bool debug = false;
     // create arrays here
     //random number seed and using time to ensure the numbers change each time
     srand(time(NULL));
@@ -24,8 +42,10 @@ int* fillArray(int * arr, int sz, int upper_bound){
         int num = (rand() % upper_bound);
         //placing numbers in elements of the array as it iterates through
         arr[i] = num;
-        //printing numbers as it goes 
-        cout << i << " --> " << arr[i] << endl;
+        if(debug){
+            //printing numbers as it goes 
+            cerr << i << " --> " << arr[i] << endl;
+        }
     }
     //returning the array
     return arr;
@@ -58,7 +78,7 @@ int SimpleRecursion(int * randomArray, int finder, int array_size, int num, int 
     return SimpleRecursion(randomArray, finder + 1, array_size, num, count); 
 }
 
-void timeIteration(int * random, int array_size, int lookup_num){
+double timeIteration(int * random, int array_size, int lookup_num){
     //begin time clock 
     clock_t begin;
     clock_t end;
@@ -71,12 +91,12 @@ void timeIteration(int * random, int array_size, int lookup_num){
     //end time 
     end = clock();
     //calculate time 
-    timeFinal = end - begin / CLOCKS_PER_SEC;
-    cout << "Iteration Time = " << timeFinal << endl;
-
+    timeFinal = (double) (end - begin) / CLOCKS_PER_SEC;
+    cout << "Iteration Time = " << timeFinal << " seconds." << endl;
+    return timeFinal;
 }
 
-void timeRecursion(int * random, int array_size, int lookup_num){
+double timeRecursion(int * random, int array_size, int lookup_num){
     //begin time clock 
     clock_t begin;
     clock_t end;
@@ -88,12 +108,14 @@ void timeRecursion(int * random, int array_size, int lookup_num){
     int idx = 0;
     int frequency_rec = SimpleRecursion(random,idx,array_size,lookup_num,count);
     end = clock();
-    timeFinal = end - begin / CLOCKS_PER_SEC;
+    timeFinal = (double) (end - begin) / CLOCKS_PER_SEC;
     cout << "[RECURSION] Frequency = " << frequency_rec << endl;
-    cout << "Iteration Time = " << timeFinal << endl;
+    cout << "Recursion Time = " << timeFinal << " seconds." << endl;
+    return timeFinal;
 }
 
 int main(){
+    cout << "------------------------------------------------" << endl;
     // -- Program Configurations --
     int array_size = 10000;
     // number we are looking for
@@ -105,8 +127,15 @@ int main(){
     //function to fill array
     random = fillArray(random, array_size, randomNum_upperBound);
 
-    timeIteration(random,array_size,lookup_num);
-    timeRecursion(random,array_size,lookup_num);
+    double iter_time = timeIteration(random,array_size,lookup_num);
+    double recur_time = timeRecursion(random,array_size,lookup_num);
 
+    if(iter_time < recur_time){
+        cout << "[LOG]: Iteration was faster by: " << recur_time - iter_time << " seconds.\n";
+    }
+    else if(recur_time < iter_time){
+        cout << "[LOG]: Recursion was faster by: " << iter_time - recur_time << " seconds.\n";
+    }
+    cout << "------------------------------------------------" << endl;
     return 0;
 }
