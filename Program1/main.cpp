@@ -1,3 +1,10 @@
+/**
+ * Author: Mohammed Ali
+ * Version: 10132019
+ * This program times iteration vs recursion
+ * on numerical look-up on arrays with random
+ * numbers
+ */ 
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -6,52 +13,6 @@
 #include <iterator>
 #include <vector>
 using namespace std;
-
-int SimpleRecursion(int * randomArray, int left, int right, int num, int count) {
-    
-    //if elements on the left are equal to frequency number reutrn and add to counter
-    if (randomArray[left] == num){ 
-        count++;
-    }
-    //if elements on the right side of element are equal to frequency number return and add to counter 
-    if (randomArray[right] == num){
-        count++;
-    }
-    //base case of the numbers meeting in the middle of the array
-    if (right < left){
-        return count;
-    }
-    
-    //calling method to repeat over and over
-    return SimpleRecursion(randomArray, left + 1, right - 1, num, count); 
-}
-
-int SimpleRecursion2(int * randomArray, int finder, int array_size, int num, int count) {
-    //base case of the numbers meeting in the middle of the array
-
-    //if elements on the left are equal to frequency number reutrn and add to counter
-    if (randomArray[finder] == num){ 
-        count++;
-    }
-    if (finder+1 == array_size){
-        return count;
-    }
-    //calling method to repeat over and over
-    return SimpleRecursion2(randomArray, finder + 1, array_size, num, count); 
-}
-
-int SimpleIteration(int * randomArray, int array_size,int freq){
-    //variable to count freq
-    int count = 0;
-    //loop to iterate through array
-    for(int i = 0; i < array_size; i++){
-        //checking if element is equal to the frequency number
-        if(randomArray[i] == freq){
-            count++;
-        }
-    }
-    return count;
-}
 
 int* fillArray(int * arr, int sz, int upper_bound){
     // create arrays here
@@ -70,19 +31,34 @@ int* fillArray(int * arr, int sz, int upper_bound){
     return arr;
 }
 
-int main(){
-    map<string,int> config;
-    config.emplace("array_size",10000);
-    int array_size = 10000;
-    // number we are looking for
-    int lookup_num = 5;
+int SimpleIteration(int * randomArray, int array_size,int freq){
+    //variable to count freq
+    int count = 0;
+    //loop to iterate through array
+    for(int i = 0; i < array_size; i++){
+        //checking if element is equal to the frequency number
+        if(randomArray[i] == freq){
+            count++;
+        }
+    }
+    return count;
+}
 
-    // allocate memory for 10 numbers
-    int * random = new int[array_size];
-    //function to fill array
-    random = fillArray(random, array_size, 101);
+int SimpleRecursion(int * randomArray, int finder, int array_size, int num, int count) {
+    //base case of the numbers meeting in the middle of the array
 
+    //if elements on the left are equal to frequency number reutrn and add to counter
+    if (randomArray[finder] == num){ 
+        count++;
+    }
+    if (finder+1 == array_size){
+        return count;
+    }
+    //calling method to repeat over and over
+    return SimpleRecursion(randomArray, finder + 1, array_size, num, count); 
+}
 
+void timeIteration(int * random, int array_size, int lookup_num){
     //begin time clock 
     clock_t begin;
     clock_t end;
@@ -98,15 +74,39 @@ int main(){
     timeFinal = end - begin / CLOCKS_PER_SEC;
     cout << "Iteration Time = " << timeFinal << endl;
 
+}
+
+void timeRecursion(int * random, int array_size, int lookup_num){
+    //begin time clock 
+    clock_t begin;
+    clock_t end;
+    double timeFinal;
+
     begin = clock();
     //calling SimpleRecursion function
     int count = 0;
     int idx = 0;
-    int frequency_rec = SimpleRecursion2(random,idx,array_size,lookup_num,count);
-    //int frequency_rec = SimpleRecursion(random, 0, 100, lookup_num,count);
+    int frequency_rec = SimpleRecursion(random,idx,array_size,lookup_num,count);
     end = clock();
     timeFinal = end - begin / CLOCKS_PER_SEC;
     cout << "[RECURSION] Frequency = " << frequency_rec << endl;
     cout << "Iteration Time = " << timeFinal << endl;
+}
+
+int main(){
+    // -- Program Configurations --
+    int array_size = 10000;
+    // number we are looking for
+    int lookup_num = 5;
+    int randomNum_upperBound = 101;
+
+    // allocate memory for array_size numbers
+    int * random = new int[array_size];
+    //function to fill array
+    random = fillArray(random, array_size, randomNum_upperBound);
+
+    timeIteration(random,array_size,lookup_num);
+    timeRecursion(random,array_size,lookup_num);
+
     return 0;
 }
