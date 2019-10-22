@@ -50,36 +50,6 @@ using namespace std;
 //     return myStack.empty();
 // }
 
-bool isValid(string expression){
-    stack<char> myStack;
-    if(expression.length() == 0){
-        return true;
-    }
-    if(expression.length() == 1){
-        return false;
-    }
-    for(int i = 0; i < expression.length(); i++) {
-        char c = expression[i];
-        cout << c << endl;
-        if(c == '(' || c == '[' || c == '{'){
-            myStack.push(c);
-        }
-        if(c == '}' && myStack.top() != '{') {
-            return false;
-        }
-        if(c == ')' && myStack.top() != '(') {
-            return false;
-        }
-        if(c == ']' && myStack.top() != '[') {
-            return false;
-        }
-        else{
-            myStack.pop();
-        }
-    }
-    return myStack.empty();
-}
-
 // bool BalancedExpression(string expression){
 //     //stack to put string into
 //     stack <char> myStack;
@@ -111,9 +81,94 @@ bool isValid(string expression){
 //     return true;
 // }
 
+// bool isValid(string expression){
+//     stack<char> myStack;
+//     //if string is empty automatically return it is balanced
+//     if(expression.length() == 0){
+//         return true;
+//     }
+//     //any odd number expression can not be balanced
+//     if(expression.length() % 2 != 0){
+//         return false;
+//     }
+
+//     for(int i = 0; i < expression.length(); i++) {
+//         char c = expression[i];
+//         //cout << c << endl;
+//         if(c == '(' || c == '[' || c == '{'){
+//             myStack.push(c);
+//         }
+//         else if(c == '}' && myStack.top() == '{') {
+//             myStack.pop();
+//             return true;
+//         }
+//         else if(c == ')' && myStack.top() == '(') {
+//             myStack.pop();
+//             return true;
+//         }
+//         else if(c == ']' && myStack.top() == '[') {
+//             myStack.pop();
+//             return true;
+//         }
+//         return myStack.empty();
+//     }
+//     return myStack.empty();
+// }
+
+bool MatchingPair(char open, char close){
+    if(open == '(' && close == ')'){
+        return true;
+    }
+    if(open == '{' && close == '}'){
+        return true;
+    }
+    if(open == '[' && close == ']'){
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+bool isValid(string expression){
+    stack<char> myStack;
+    //if string is empty automatically return it is balanced
+    if(expression.length() == 0){
+        return true;
+    }
+    //any odd number expression can not be balanced
+    if(expression.length() % 2 != 0){
+        return false;
+    }
+
+    if(!expression.length()){
+        for(int i = 0; i < expression.length(); i++){
+            if(expression[i] == '(' || expression[i] == '{' || expression[i] == '['){
+                myStack.push(expression[i]);
+                continue;
+            }
+            else {
+                if(myStack.empty()){
+                    return false;
+                }
+                if(MatchingPair(myStack.top(), expression[i])){
+                    myStack.pop();
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+    }
+    return myStack.empty();
+}
+        
+
+
 int main(){
     //example expression
-    string expression = "{[()]}";
+    //string expression = "[][]";
+    string expression = "[][]";
     //fillingStack(expression);
     if(isValid(expression)){
         cout << "--------------------------------" << endl;
@@ -123,7 +178,7 @@ int main(){
     }
     else{
         cout << "--------------------------------" << endl;
-        cout << "The Expression is not Balanced" << endl; 
+        cout << "The Expression is NOT Balanced" << endl; 
         cout << "--------------------------------" << endl;
         return 0;
     }
