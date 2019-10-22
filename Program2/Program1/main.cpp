@@ -83,6 +83,7 @@ double timeIteration(int * random, int array_size, int lookup_num){
     clock_t begin;
     clock_t end;
     double timeFinal;
+
     begin = clock();
     //calling SimpleIteration function
     int frequency_iter = SimpleIteration(random,array_size,lookup_num);
@@ -100,6 +101,7 @@ double timeRecursion(int * random, int array_size, int lookup_num){
     clock_t begin;
     clock_t end;
     double timeFinal;
+
     begin = clock();
     //calling SimpleRecursion function
     int count = 0;
@@ -119,12 +121,15 @@ int main(){
     // number we are looking for
     int lookup_num = 5;
     int randomNum_upperBound = 101;
+
     // allocate memory for array_size numbers
     int * random = new int[array_size];
     //function to fill array
     random = fillArray(random, array_size, randomNum_upperBound);
+
     double iter_time = timeIteration(random,array_size,lookup_num);
     double recur_time = timeRecursion(random,array_size,lookup_num);
+
     if(iter_time < recur_time){
         cout << "[LOG]: Iteration was faster by: " << recur_time - iter_time << " seconds.\n";
     }
